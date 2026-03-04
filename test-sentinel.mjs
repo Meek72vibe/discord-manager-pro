@@ -5,7 +5,15 @@
  */
 
 import "dotenv/config";
+import { registerTools, getToolCount } from "./dist/src/core/toolRegistry.js";
+import { moderationTools } from "./dist/src/tools/moderation/index.js";
+import { structureTools } from "./dist/src/tools/structure/index.js";
+import { analyticsTools } from "./dist/src/tools/analytics/index.js";
+import { utilityTools } from "./dist/src/tools/utility/index.js";
+import { aiTools } from "./dist/src/tools/ai/index.js";
 import { Client, GatewayIntentBits } from "discord.js";
+
+registerTools([...moderationTools, ...structureTools, ...analyticsTools, ...utilityTools, ...aiTools]);
 
 const TOKEN = process.env.DISCORD_TOKEN;
 const GUILD_ID = process.env.DISCORD_GUILD_ID;
@@ -77,7 +85,7 @@ client.once("ready", async () => {
     console.log("═══════════════════════════════════════");
     const textChannel = channels.find(c => c !== null && c.type === 0);
     if (textChannel && textChannel.isTextBased()) {
-      const msg = await textChannel.send("👋 **Sentinel is online and operational!** All 88 MCP tools are loaded. ✅");
+      const msg = await textChannel.send(`👋 **Sentinel is online and operational!** All ${getToolCount()} MCP tools are loaded. ✅`);
       console.log(`  ✅ Message sent to #${textChannel.name} (ID: ${msg.id})`);
     } else {
       console.log("  ⚠️  No text channel found to send message");

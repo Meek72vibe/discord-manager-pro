@@ -361,7 +361,7 @@ client.once("ready", () => {
     console.log(`\n✅  Sentinel v5 Bot — ${client.user.tag}`);
     console.log(`📌  Prefix: ${PREFIX}`);
     console.log(`🛡️   SAFE_MODE: ${SAFETY.SAFE_MODE} | READ_ONLY: ${SAFETY.READ_ONLY}`);
-    console.log(`🔧  88 tools loaded\n`);
+    console.log(`🔧  ${getAllTools().length} tools loaded\n`);
     client.user.setActivity(`${PREFIX} help`, { type: 2 });
 });
 
