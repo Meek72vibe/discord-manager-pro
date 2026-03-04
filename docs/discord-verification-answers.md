@@ -48,7 +48,7 @@ https://meek72vibe.github.io/discord-manager-pro/terms
 
 ## BOT DESCRIPTION (for Discord listing)
 
-> Discord Manager Pro is an AI-native Discord server management tool built for the Model Context Protocol (MCP). It allows server owners and community managers to manage their Discord server through natural language conversation with Claude AI. Features include channel management, member moderation, role administration, thread management, webhook control, scheduled events, community analytics, and AI-powered insights including activity summaries, sentiment analysis, toxicity detection, raid detection, and server health scoring. The bot is self-hosted open-source software — users run it on their own machines with their own API keys.
+> Discord Manager Pro is an AI-native Discord server management tool built for the Model Context Protocol (MCP). It allows server owners and community managers to manage their Discord server through natural language conversation with Claude AI. Features include 157 tools spanning channel management, member moderation, role administration, thread management, webhook control, scheduled events, community analytics, and AI-powered insights including activity summaries, sentiment analysis, toxicity detection, raid detection, and server health scoring. The bot is self-hosted open-source software — users run it on their own machines with their own API keys.
 
 ---
 
