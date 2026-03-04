@@ -1,10 +1,13 @@
 {
-  "name": "discord-manager-pro",
-  "version": "2.0.0",
-  "description": "AI-native Discord server manager via MCP — 88 tools, 6 AI providers, zero config dashboard. Turn Claude into your community operator.",
+  "name": "sentinel",
+  "version": "5.0.0",
+  "description": "AI-Native Discord Infrastructure Framework — deterministic, schema-enforced, provider-agnostic, security-hardened.",
   "main": "dist/src/index.js",
   "type": "module",
-  "bin": { "discord-manager-pro": "dist/src/index.js" },
+  "bin": {
+    "discord-manager-pro": "dist/src/index.js",
+    "sentinel": "src/bot.mjs"
+  },
   "author": "meek72vibe",
   "repository": {
     "type": "git",
@@ -16,6 +19,9 @@
   },
   "files": [
     "dist/",
+    "src/bot.mjs",
+    "src/bot-setup.mjs",
+    ".env.example",
     "README.md",
     "LICENSE",
     "package.json"
@@ -23,44 +29,46 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/src/index.js",
+    "bot": "node bot.mjs",
+    "setup": "node src/bot-setup.mjs",
     "dashboard": "node dist/dashboard/server.js",
-    "setup": "npm run build && npm run dashboard",
     "dev": "npm run build && npm start",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:cover": "vitest run --coverage",
-    "test:legacy": "npx ts-node --esm tests/utils.test.ts && npx ts-node --esm tests/responses.test.ts && npx ts-node --esm tests/ai-parsers.test.ts"
+    "test": "vitest run"
   },
   "keywords": [
     "discord",
+    "discord-bot",
     "mcp",
     "claude",
     "ai",
+    "groq",
+    "gemini",
     "moderation",
     "community",
     "model-context-protocol",
     "sentiment",
     "toxicity",
-    "discord-bot",
-    "llm",
-    "groq",
-    "gemini",
     "server-management",
-    "anthropic"
+    "anthropic",
+    "llm",
+    "chatbot"
   ],
   "license": "MIT",
-  "engines": { "node": ">=18.0.0" },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "discord.js": "^14.0.0",
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.0.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "ts-node": "^10.9.0",
     "@types/node": "^20.0.0",
-    "vitest": "^1.0.0",
-    "@vitest/coverage-v8": "^1.0.0"
+    "@vitest/coverage-v8": "^1.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
   }
 }
