@@ -69,8 +69,8 @@ Run Sentinel as a standalone bot with regex command handling and AI fallback.
 ## Quick Start
 
 ```bash
-git clone https://github.com/yourname/sentinel
-cd sentinel
+git clone https://github.com/Meek72vibe/discord-manager-pro.git
+cd discord-manager-pro
 npm install
 cp .env.example .env
 # Edit .env with your tokens

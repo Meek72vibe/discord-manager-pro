@@ -12,6 +12,7 @@ warnings.json
 # Logs
 *.log
 npm-debug.log*
+audit_trail.jsonl
 
 # Source maps
 *.js.map
