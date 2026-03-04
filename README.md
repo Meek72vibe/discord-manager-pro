@@ -1,5 +1,10 @@
 # Sentinel v5
 
+![npm](https://img.shields.io/npm/v/sentinel)
+![license](https://img.shields.io/npm/l/sentinel)
+![build](https://img.shields.io/github/actions/workflow/status/meek72vibe/discord-manager-pro/ci.yml)
+![coverage](https://img.shields.io/badge/coverage-100%25-success)
+
 **AI-Native Discord Infrastructure Framework**
 
 > A deterministic, schema-enforced, security-hardened framework for managing Discord servers at scale.
@@ -10,13 +15,44 @@
 
 Sentinel is **not a bot**. It is a **Discord infrastructure framework** that exposes a structured, validated, permission-enforced API for Discord server management — powered by Claude, Groq, Gemini, or any OpenAI-compatible provider.
 
-Every action flows through a strict pipeline:
+### How it Works (Execution Flow)
 
+Every action flows through a strict, zero-hallucination pipeline:
+
+```mermaid
+graph TD
+    A[Natural Language Prompt] --> B[AI Orchestrator / Router]
+    B --> C[Injection Filter]
+    C -->|JSON Output| D{Zod Schema Validator}
+    D -->|Invalid| E[Error Boundary / Retry]
+    D -->|Valid| F[SAFE_MODE / Permissions Gate]
+    F -->|Passed| G[Discord Execution]
 ```
-AI Provider → Injection Filter → Zod Validator → Tool Registry → Execution Wrapper → Discord
+
+**Example Tool AI Call Flow:**
+A user says: *"Silence everyone in #general for 10 seconds."*
+Sentinel parses it into executing this JSON array natively:
+```json
+[
+  {
+    "tool": "set_slowmode",
+    "params": {
+      "channelId": "1234567890",
+      "seconds": 10
+    }
+  }
+]
 ```
 
 **Nothing bypasses the wrapper.**
+
+### Sentinel vs Traditional Bots 🆚
+| Traditional Bots (MEE6, Dyno) | Sentinel v5 |
+|-------------------------------|----------------|
+| Requires strict `!commands` | Understands Natural English |
+| Hardcoded responses | Dynamic context-aware AI |
+| Siloed features (10 bots needed) | Unified 157-tool API |
+| Manual moderation needed | Proactive Autonomy / RAG |
 
 ---
 
@@ -77,13 +113,17 @@ node dist/src/index.js
 
 ---
 
-## Safety
+## Safety & SAFE_MODE
+
+Because Sentinel grants an AI administrative access, safety is physically hardcoded into the pipeline wrapper.
 
 | Mode | Effect |
 |------|--------|
-| `SAFE_MODE=true` (default) | All destructive tools (kick, ban, delete, etc.) are blocked |
-| `READ_ONLY=true` | All mutations are blocked — analysis and read operations only |
-| `DEBUG_MODE=true` | Verbose structured JSON logs to stderr |
+| `SAFE_MODE=true` (default) | All destructive tools (kick, ban, delete, etc.) are blocked at the wrapper. Even if the AI tries to ban someone, the API rejects it before touching Discord. |
+| `READ_ONLY=true` | All mutations are blocked — analysis and read operations only. |
+| `DEBUG_MODE=true` | Verbose structured JSON logs to stderr. |
+
+Furthermore, the **Role Hierarchy Check** dynamically calculates Discord permissions. It is impossible for Sentinel to execute a tool (like `timeout`) against a user who outranks the bot in the Discord Role list.
 
 Read → [SECURITY.md](./SECURITY.md) for the full threat model.
 

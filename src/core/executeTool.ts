@@ -88,8 +88,13 @@ export async function executeTool(
     // ── 7. Handler execution ───────────────────────────────────────────────
     logDebug("tool:executing", { tool: toolName, guildId: ctx.guildId, requestId: ctx.requestId });
     try {
+        if (tool.cooldownMs) {
+            await new Promise(resolve => setTimeout(resolve, tool.cooldownMs));
+        }
+
         const result = await tool.handler(ctx, validation.params);
         const durationMs = Date.now() - start;
+
         logToolExecution({
             tool: toolName,
             guildId: ctx.guildId,
@@ -100,6 +105,20 @@ export async function executeTool(
             errorType: result.success ? undefined : result.errorType,
             error: result.success ? undefined : result.error,
         });
+
+        // Emit to Audit Store if the action was destructive and successful
+        if (result.success && tool.destructive) {
+            const { persistAuditAction } = await import("../db/auditStore.js");
+            await persistAuditAction({
+                timestamp: new Date().toISOString(),
+                toolName,
+                guildId: ctx.guildId,
+                userId: ctx.userId,
+                requestId: ctx.requestId,
+                parameters: validation.params
+            });
+        }
+
         return result;
     } catch (e) {
         const message = e instanceof Error ? e.message : String(e);

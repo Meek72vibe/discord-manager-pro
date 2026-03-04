@@ -129,7 +129,7 @@ Nothing bypasses this pipeline. No tool handler is ever called directly.
 
 ## Responsible Disclosure
 
-To report a security vulnerability, open a **private GitHub Security Advisory** or email the maintainer directly. Do not open public issues for unpatched vulnerabilities.
+To report a security vulnerability, open a **private GitHub Security Advisory** or email the maintainer directly at **security@sentinel.dev**. Do not open public issues for unpatched vulnerabilities.
 
 Please include:
 - Description of the vulnerability

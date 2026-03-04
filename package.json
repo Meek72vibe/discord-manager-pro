@@ -33,7 +33,9 @@
     "setup": "node src/bot-setup.mjs",
     "dashboard": "node dist/dashboard/server.js",
     "dev": "npm run build && npm start",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "npx tsc --noEmit && echo 'Lint passed'"
   },
   "keywords": [
     "discord",

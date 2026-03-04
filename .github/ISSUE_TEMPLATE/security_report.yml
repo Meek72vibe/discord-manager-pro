@@ -1,0 +1,12 @@
+name: Security Report 🔐
+description: Report a vulnerability (DO NOT USE FOR PUBLIC ISSUES)
+title: "[SECURITY]: "
+labels: ["security"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        🚨 **STOP!** 🚨 
+        If you have discovered a security vulnerability, please do NOT open a public issue.
+        Please email the maintainer directly or open a GitHub Security Advisory.
+        Read `SECURITY.md` for responsible disclosure.

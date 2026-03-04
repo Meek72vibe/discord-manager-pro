@@ -13,7 +13,7 @@ export type ErrorType =
 // ─── Tool Result ─────────────────────────────────────────────────────────────
 
 export type ToolResult =
-  | { success: true;  data: unknown }
+  | { success: true; data: unknown }
   | { success: false; error: string; errorType: ErrorType };
 
 export function ok(data: unknown): ToolResult {
@@ -40,6 +40,12 @@ export interface ToolDefinition<P extends ZodSchema = ZodSchema> {
   schema: P;
   destructive: boolean;
   requiredPermissions: bigint[];   // PermissionFlagsBits values
+
+  // -- Enterprise Architecture Metadata --
+  aiDependent?: boolean;           // True if this tool heavily relies on an upstream AI provider internally
+  requiresElevatedRole?: boolean;  // True if targetting powerful server constructs
+  cooldownMs?: number;            // Localized rate limit execution delay
+
   handler(ctx: ToolContext, params: z.infer<P>): Promise<ToolResult>;
 }
 
