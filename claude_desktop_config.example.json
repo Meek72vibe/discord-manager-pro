@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "discord-manager-pro": {
+      "command": "node",
+      "args": ["/ABSOLUTE/PATH/TO/discord-manager-pro/dist/src/index.js"]
+    }
+  }
+}

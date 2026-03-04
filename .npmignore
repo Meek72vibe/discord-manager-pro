@@ -1,0 +1,17 @@
+# Development files — not needed in the published package
+tests/
+docs/
+dashboard/
+.github/
+.env
+.env.example
+*.map
+CLAUDE.md
+CONTRIBUTING.md
+CHANGELOG.md
+SECURITY.md
+warnings.json
+config.json
+claude_desktop_config.example.json
+tsconfig.json
+vitest.config.ts

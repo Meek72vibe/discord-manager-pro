@@ -1,0 +1,66 @@
+{
+  "name": "discord-manager-pro",
+  "version": "2.0.0",
+  "description": "AI-native Discord server manager via MCP — 88 tools, 6 AI providers, zero config dashboard. Turn Claude into your community operator.",
+  "main": "dist/src/index.js",
+  "type": "module",
+  "bin": { "discord-manager-pro": "dist/src/index.js" },
+  "author": "meek72vibe",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meek72vibe/discord-manager-pro.git"
+  },
+  "homepage": "https://github.com/meek72vibe/discord-manager-pro#readme",
+  "bugs": {
+    "url": "https://github.com/meek72vibe/discord-manager-pro/issues"
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/src/index.js",
+    "dashboard": "node dist/dashboard/server.js",
+    "setup": "npm run build && npm run dashboard",
+    "dev": "npm run build && npm start",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:cover": "vitest run --coverage",
+    "test:legacy": "npx ts-node --esm tests/utils.test.ts && npx ts-node --esm tests/responses.test.ts && npx ts-node --esm tests/ai-parsers.test.ts"
+  },
+  "keywords": [
+    "discord",
+    "mcp",
+    "claude",
+    "ai",
+    "moderation",
+    "community",
+    "model-context-protocol",
+    "sentiment",
+    "toxicity",
+    "discord-bot",
+    "llm",
+    "groq",
+    "gemini",
+    "server-management",
+    "anthropic"
+  ],
+  "license": "MIT",
+  "engines": { "node": ">=18.0.0" },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "discord.js": "^14.0.0",
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0",
+    "@types/node": "^20.0.0",
+    "vitest": "^1.0.0",
+    "@vitest/coverage-v8": "^1.0.0"
+  }
+}

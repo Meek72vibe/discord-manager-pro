@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Discord Manager Pro</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d0f12; color: #e8eaf0; line-height: 1.7; padding: 40px 20px 80px; }
+  .container { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 32px; font-weight: 800; color: #5865f2; margin-bottom: 8px; }
+  .meta { color: #6b7280; font-size: 14px; margin-bottom: 40px; font-family: monospace; }
+  h2 { font-size: 18px; font-weight: 700; color: #fff; margin: 36px 0 12px; border-left: 3px solid #5865f2; padding-left: 12px; }
+  p { color: #c9cdd6; margin-bottom: 14px; }
+  ul { padding-left: 20px; margin-bottom: 14px; }
+  li { color: #c9cdd6; margin-bottom: 6px; }
+  .highlight { background: rgba(88,101,242,0.1); border: 1px solid rgba(88,101,242,0.3); border-radius: 10px; padding: 16px 20px; margin: 20px 0; }
+  .highlight p { color: #a5b4fc; margin: 0; }
+  a { color: #5865f2; }
+  .badge { display: inline-block; background: rgba(87,242,135,0.15); color: #57f287; border: 1px solid rgba(87,242,135,0.3); border-radius: 20px; padding: 4px 12px; font-size: 12px; font-family: monospace; font-weight: 700; margin-bottom: 20px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Privacy Policy</h1>
+  <div class="meta">Discord Manager Pro · Last updated: March 2026 · Version 2.0</div>
+  <span class="badge">✅ ZERO DATA STORAGE</span>
+
+  <div class="highlight">
+    <p><strong>TL;DR:</strong> Discord Manager Pro is self-hosted software that runs entirely on your own machine. We (the developers) never receive, store, or have access to any of your data. Your Discord data stays between you, Discord, and the AI provider you choose.</p>
+  </div>
+
+  <h2>1. Who We Are</h2>
+  <p>Discord Manager Pro is an open-source MCP (Model Context Protocol) server available at <a href="https://github.com/meek72vibe/discord-manager-pro">github.com/meek72vibe/discord-manager-pro</a>. It is free software maintained by independent developers.</p>
+
+  <h2>2. What Data Is Accessed</h2>
+  <p>When you run Discord Manager Pro, it accesses the following data from your Discord server via the Discord API:</p>
+  <ul>
+    <li>Server information (name, member count, channel list, roles)</li>
+    <li>Channel messages (when using read or AI analysis tools)</li>
+    <li>Member information (usernames, roles, join dates)</li>
+    <li>Audit log entries</li>
+    <li>Server events, webhooks, and invites</li>
+  </ul>
+
+  <h2>3. How Data Is Processed</h2>
+  <p>All data processing happens <strong>locally on your machine</strong>. The data flow is:</p>
+  <ul>
+    <li>Your Discord server → Discord API → Your machine running Discord Manager Pro</li>
+    <li>For AI tools: Your machine → Your chosen AI provider's API (using your own API key) → Your machine</li>
+    <li>Results are returned to Claude Desktop on your machine</li>
+  </ul>
+  <p>At no point does data pass through our servers — because we don't have any servers.</p>
+
+  <h2>4. What We Store</h2>
+  <p><strong>We store absolutely nothing.</strong> Discord Manager Pro is stateless. The only local files created are:</p>
+  <ul>
+    <li><code>config.json</code> — Your API keys and settings, stored only on your machine</li>
+    <li><code>warnings.json</code> — Member warning records, stored only on your machine</li>
+  </ul>
+  <p>These files never leave your computer.</p>
+
+  <h2>5. Third-Party Services</h2>
+  <p>When you use AI-powered tools, message content is sent to your chosen AI provider using your own API key. Each provider has their own privacy policy:</p>
+  <ul>
+    <li>Anthropic Claude: <a href="https://www.anthropic.com/privacy">anthropic.com/privacy</a></li>
+    <li>Google Gemini: <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
+    <li>Groq: <a href="https://groq.com/privacy-policy">groq.com/privacy-policy</a></li>
+    <li>Mistral AI: <a href="https://mistral.ai/privacy">mistral.ai/privacy</a></li>
+    <li>Ollama (local): No data leaves your machine</li>
+  </ul>
+  <p>You are responsible for reviewing the privacy policies of any AI provider you choose to use.</p>
+
+  <h2>6. Discord API Usage</h2>
+  <p>This bot uses Discord's official API and complies with Discord's Terms of Service and Developer Policy. We request only the minimum necessary permissions for the features you use. Privileged intents (GuildMembers, MessageContent) are used solely for the stated purpose of server management and AI analysis.</p>
+
+  <h2>7. Children's Privacy</h2>
+  <p>Discord Manager Pro is not directed at children under 13. Discord itself requires users to be at least 13 years old.</p>
+
+  <h2>8. Your Rights</h2>
+  <p>Since we store no data, there is nothing to delete or export. To remove all local data, simply delete the <code>config.json</code> and <code>warnings.json</code> files from your installation directory and remove the bot from your Discord server.</p>
+
+  <h2>9. Changes to This Policy</h2>
+  <p>We may update this privacy policy. Changes will be reflected in the GitHub repository with an updated date.</p>
+
+  <h2>10. Contact</h2>
+  <p>For privacy questions, open an issue at <a href="https://github.com/meek72vibe/discord-manager-pro/issues">github.com/meek72vibe/discord-manager-pro/issues</a>.</p>
+</div>
+</body>
+</html>
