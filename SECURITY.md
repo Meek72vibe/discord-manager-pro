@@ -55,9 +55,9 @@ Nothing bypasses this pipeline. No tool handler is ever called directly.
 **Risk:** The AI (or a compromised caller) requests irreversible actions like banning members, deleting channels, or wiping messages.
 
 **Mitigations:**
-- `SAFE_MODE=true` (default) blocks the entire `DESTRUCTIVE_TOOLS` set at the wrapper level.
-- Destructive actions are rate-limited: max 5 per 60 seconds per guild.
-- The `destructive: true` flag on each tool definition is the authoritative record — the safety config references the same set.
+- `SAFE_MODE=true` (default) blocks tools marked as destructive at the wrapper level.
+- Destructive actions are rate-limited: max 5 per 60 seconds per guild via `rateLimiter.ts`.
+- The `destructive: true` flag on each tool definition (`src/tools/`) is the authoritative record.
 
 ---
 

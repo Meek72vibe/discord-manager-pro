@@ -37,35 +37,34 @@ npm run dashboard   # Opens setup UI in browser
 ## Project Structure
 
 Read [CLAUDE.md](CLAUDE.md) for the full architecture guide before writing any code.
-The key service files are all in `src/core/`. Tools are registered in `src/index.ts`.
+The key service files are all in `src/tools/`. Tools are registered dynamically via `src/core/toolRegistry.ts`.
 
 ## Adding a New Tool
 
-1. Add the function to the appropriate `src/core/*.ts` service file
-2. Add the tool schema to the `TOOLS` array in `src/index.ts`
-3. Add the case to `runTool()` switch in `src/index.ts`
-4. If the tool is destructive (deletes data), add to `DESTRUCTIVE_TOOLS` in `src/core/constants.ts`
-5. Write a test in `tests/`
+1. Find the appropriate category folder under `src/tools/` (e.g., `structure`, `moderation`).
+2. Add your tool definition object to the exported array in `index.ts`.
+3. Set `destructive: true` if the tool modifies the server permanently.
+4. Set required Discord.js `PermissionFlagsBits` in the `requiredPermissions` array.
+5. The Zod pipeline will automatically hook it up for the LLM!
 6. Update the tool table in `README.md`
 
 ## Running Tests
 
 ```bash
-npm test              # Run all test suites
-npm run test:watch    # Watch mode (requires Vitest)
-npm run test:cover    # Coverage report
+node full-discord-test.mjs  # Run total test diagnostic
+npm test                    # Run all unit test suites
 ```
 
-Tests are in `tests/`. New tests should use Vitest and mock Discord.js via `tests/mocks/discord.ts`.
+Tests for the v5 layer can be run locally.
 
 ## Code Style
 
 - TypeScript strict mode — zero `any` in new code
-- All AI tool responses must use typed interfaces from `src/types/ai-responses.ts`
-- All limits via `LIMITS` from `src/core/constants.ts` — no magic numbers
-- All user content sanitized with `sanitizeForPrompt()` before AI injection
+- All tools must use Zod schemas in `schema` property
+- All limits via `LIMITS` from `src/config/limits.ts` — no magic numbers
+- All user content sanitized with `sanitizeUserContent()` before AI injection
 - Never return webhook URLs in responses (security)
-- All new service functions must follow the `ToolResult<T>` pattern
+- All new service functions must be registered in the Zod tool registry
 
 ## License
 

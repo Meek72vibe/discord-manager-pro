@@ -1,149 +1,93 @@
-# CLAUDE.md — Discord Manager Pro
+# CLAUDE.md — Sentinel v5
 
 This file tells Claude AI how to work with this codebase effectively.
 
 ## Project Overview
 
-Discord Manager Pro is an MCP (Model Context Protocol) server that gives Claude
-direct, intelligent access to Discord servers. It has **88 tools** across 12 categories
-and **15 AI intelligence tools** powered by a configurable multi-LLM backend.
+Sentinel v5 is an AI-Native Discord Infrastructure Framework that gives an AI
+direct, deterministic access to Discord servers. It uses a strict Zod-validated pipeline
+containing **157 tools** across 5 categories powered by a configurable multi-LLM backend.
 
 ## Architecture
 
 ```
 src/
-├── index.ts                    — MCP server entry point + tool registry (88 tools)
+├── index.ts                    ← MCP server entry point
+├── config/
+│   ├── limits.ts               ← All hard limits (no magic numbers)
+│   └── safety.ts               ← SAFE_MODE, READ_ONLY, DESTRUCTIVE_TOOLS
 ├── core/
-│   ├── discordService.ts       — Core Discord operations (server, channels, members, roles)
-│   ├── channelService.ts       — Channel CRUD, lock/unlock, permissions, slowmode
-│   ├── roleService.ts          — Role CRUD, permissions, reorder
-│   ├── moderationService.ts    — Ban/kick/warn/timeout, message ops, reactions
-│   ├── analyticsService.ts     — Member growth, inactive detection, invite stats
-│   ├── securityService.ts      — Raid detection, new account checks, audit log
-│   ├── threadService.ts        — Thread create/archive/lock/manage
-│   ├── webhookService.ts       — Webhook CRUD + send (URLs never returned — security)
-│   ├── eventService.ts         — Guild scheduled events
-│   ├── emojiService.ts         — Emoji + sticker management
-│   ├── summaryService.ts       — Summarize, sentiment, toxicity (typed parsers)
-│   ├── aiService.ts            — 12 AI intelligence tools (typed, sanitized, cached)
-│   ├── constants.ts            — All limits, SAFE_MODE, DESTRUCTIVE_TOOLS set
-│   ├── env.ts                  — Config validation (reads config.json or .env)
-│   └── utils.ts                — requireString/Number (with maxLength), clamp, truncateForAI
-├── discord/
-│   └── client.ts               — Discord.js client singleton + safety guards
-├── ai/
-│   ├── client.ts               — Multi-LLM client, lazy Anthropic instance, semaphore+timeout
-│   ├── prompts.ts              — ALL prompts centralized here (never inline)
-│   ├── parsers.ts              — parseWithRetry<T> + typed parsers for summary/sentiment/toxicity
-│   ├── sanitizer.ts            — sanitizeForPrompt() — strips injection patterns from user content
-│   └── semaphore.ts            — Concurrency limiter (max 2 AI calls)
-├── db/
-│   └── warnings.ts             — In-memory cache + async flush (no race conditions)
+│   ├── executeTool.ts          ← THE single execution wrapper
+│   ├── toolRegistry.ts         ← Tool registration + plugin API
+│   ├── validateAction.ts       ← Zod schema validation
+│   ├── rateLimiter.ts          ← Per-guild rate limiting
+│   ├── aiOrchestrator.ts       ← Concurrency + timeout + retry + providers
+│   └── injectionFilter.ts      ← Prompt injection detection
+├── adapter/
+│   └── discordAdapter.ts       ← Discord client + permission helpers
+├── logging/
+│   └── logger.ts               ← Structured JSON logging + redaction
+├── tools/
+│   ├── moderation/             ← Moderation tools (kick, ban, timeout, etc.)
+│   ├── structure/              ← Channels, roles, threads, webhooks
+│   ├── analytics/              ← Growth, raids, audits, inactivity
+│   ├── utility/                ← Messages, emojis, math, polls
+│   └── ai/                     ← Analysis, sentiment, toxicity, summarization
 ├── types/
-│   ├── responses.ts            — ToolResult<T> discriminated union
-│   └── ai-responses.ts         — Typed interfaces for all 15 AI tool outputs
-└── utils/
-    ├── logger.ts               — Structured logging, redacts tokens + webhook URLs
-    ├── cache.ts                — SimpleCache<T> with TTL
-    └── rateLimiter.ts          — Per-guild rate limit for destructive tools
+│   └── action.ts               ← ToolDefinition, ToolResult, ToolContext
+└── db/
+    └── warnings.ts             ← In-memory warning store
 ```
 
 ## Safety Architecture
 
 ### SAFE_MODE (default: ON)
 `SAFE_MODE=true` by default. Destructive tools return an error until `SAFE_MODE=false` is set.
-The `DESTRUCTIVE_TOOLS` set and `SAFE_MODE` constant live in `src/core/constants.ts`.
+The `SAFETY` config lives in `src/config/safety.ts`.
 
-### All limits live in constants.ts
+### All limits live in config/limits.ts
 Never use magic numbers. Import from `LIMITS`:
 ```typescript
-import { LIMITS } from "../core/constants.js";
-channel.messages.fetch({ limit: LIMITS.MAX_AI_MESSAGES });
+import { LIMITS } from "../../config/limits.js";
+channel.messages.fetch({ limit: LIMITS.MAX_FETCH_MESSAGES });
 ```
 
 ## Key Rules When Modifying This Code
 
-### 1. Every tool MUST return ToolResult<T>
+### 1. Every tool MUST be a ToolDefinition
 ```typescript
-import { ok, err } from "../types/responses.js";
+import { z } from "zod";
+import { ok, err } from "../../../types/action.js";
 
-export async function myTool(): Promise<ToolResult<MyData>> {
-  try {
-    const data = await doSomething();
-    return ok(data);
-  } catch (e) {
-    return err(e instanceof Error ? e.message : "Unknown error");
-  }
-}
+export const myTool = {
+    name: "my_tool",
+    description: "Does something",
+    schema: z.object({ input: z.string() }),
+    destructive: false,
+    requiredPermissions: [],
+    async handler(ctx, { input }) {
+        return ok({ processed: input });
+    }
+};
 ```
 
-### 2. Always validate inputs with requireString
+### 2. Zod handles validation automatically
+No need to manually validate parameters! `validateAction.ts` guarantees that the handler will only receive data that matches your Zod schema perfectly.
+
+### 3. Sanitize User Content
+When piping Discord channel chat logs directly into the AI prompts, always sanitize it first.
 ```typescript
-import { requireString, clamp, isErr } from "../core/utils.js";
-
-const channelId = requireString(rawChannelId, "channelId");
-if (isErr(channelId)) return channelId;
-
-// For user-supplied AI inputs, maxLength is enforced automatically (4000 chars)
-const topic = requireString(rawTopic, "topic"); // auto-capped
-```
-
-### 3. Always sanitize user content before AI injection
-```typescript
-import { sanitizeForPrompt } from "../ai/sanitizer.js";
-
-const safeContent = sanitizeForPrompt(userMessage.content);
-const prompt = AI_PROMPTS.analyze(safeContent);
-```
-
-### 4. Always use parseWithRetry — never parseAI (deleted)
-```typescript
-import { parseWithRetry } from "../ai/parsers.js";
-import type { MyAIResponseType } from "../types/ai-responses.js";
-
-const parsed = await parseWithRetry<MyAIResponseType>(raw);
-return ok(parsed ?? fallbackValue);
-```
-
-### 5. Always cap member fetches
-```typescript
-// NEVER: await guild.members.fetch()  ← OOM on large servers
-// ALWAYS:
-const members = await guild.members.fetch({ limit: LIMITS.MAX_ANALYTICS_MEMBERS });
-```
-
-### 6. Never return webhook URLs
-Webhook URLs contain secret tokens. Return only `id`, `name`, `channelId`.
-
-### 7. Check permissions before moderation actions
-```typescript
-await requireBotPermission(guild, PermissionFlagsBits.KickMembers);
-await requireRoleHierarchy(guild, member.roles.highest.position);
-```
-
-### 8. Resolve Discord partials before accessing properties
-```typescript
-if (message.partial) await message.fetch();
-```
-
-### 9. All prompts go in ai/prompts.ts
-Never inline prompts. Add to `AI_PROMPTS` or `PROMPTS` objects in `ai/prompts.ts`.
-
-### 10. AI tool return types must use ai-responses.ts
-```typescript
-import type { RaidAnalysis } from "../types/ai-responses.ts";
-// NOT: ToolResult<any>
+import { sanitizeUserContent } from "../../core/injectionFilter.js";
+const safe = sanitizeUserContent(rawInput);
 ```
 
 ## Adding a New Tool
 
-1. Add the function to the appropriate `src/core/*.ts` service file
-2. If it's an AI tool, add the typed return type to `src/types/ai-responses.ts`
-3. Add the tool definition to the `TOOLS` array in `src/index.ts`
-4. Add the case to the `runTool` switch in `src/index.ts`
-5. If destructive, add to `DESTRUCTIVE_TOOLS` set in `src/core/constants.ts`
-6. Add a test in `tests/`
-7. Update README.md tool table
+1. Find the appropriate category folder under `src/tools/` (e.g., `structure`, `moderation`).
+2. Add your tool object to the exported array in `index.ts`.
+3. Set `destructive: true` if the tool modifies the server permanently.
+4. Set required Discord.js `PermissionFlagsBits` in the `requiredPermissions` array.
+5. The pipeline will automatically hook it up for the LLM!
 
 ## Running Tests
 

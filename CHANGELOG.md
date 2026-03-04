@@ -1,6 +1,29 @@
 # Changelog
 
-## [2.0.0] - 2026-03-04 🚀 MAJOR RELEASE
+## [5.0.0] - 2026-03-04 🚀 MASSIVE MAJOR RELEASE (Sentinel v5)
+
+### Added & Upgraded — 157 Total Tools
+
+**Architecture & Agentic Loops**
+- Added **ReAct (Reason + Act) Array loops**, allowing the AI to autonomously chain multiple tools to complete complex multi-step goals from a single prompt.
+- Added **Proactive Autonomy (The Guardian)** natively to the message streams. Sentinel now autonomously detects toxic chat spikes, triggers lockdowns, and generates crisis summaries.
+- Replaced rigid tone Enums with fluid string validation, allowing infinite dynamic tones (e.g. "pirate", "hype") for AI operations.
+
+**Tool Arsenal Expansion (157 Tools)**
+The bot now natively maps to 157 unique AI capabilities across:
+- 🛡 **Moderation (15 Tools):** `mass_kick`, `mass_ban`, `softban`, `quarantine`, `verify_member`, etc.
+- 🏗 **Structure (32 Tools):** `create_forum_channel`, `create_stage`, `edit_category`, `create_threads`, etc.
+- 📊 **Analytics (17 Tools):** `member_growth_metrics`, `raid_detection_scans`, `audit_log_pulls`, etc.
+- 🛠 **Utility (27 Tools):** `create_polls`, `math_calculations`, `manage_emojis`, etc.
+- 🤖 **AI Operations (19 Tools):** `predict_churn_rate`, `server_lore_generator`, `analyze_toxicity_levels`, etc.
+
+**Infrastructure & Deployment**
+- Added `ecosystem.config.cjs` for 24/7 PM2 production deployments.
+- Upgraded the AI natural language router to flawlessly parse plain text mentions directly into validation schemas.
+
+---
+
+## [2.0.0] - 2026-03-04 
 
 ### Added — 88 Total Tools
 
